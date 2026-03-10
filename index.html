@@ -103,7 +103,8 @@
           <a class="bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 rounded-lg font-semibold transition-all shadow-lg shadow-blue-500/25"
             href="#contact">Hire Me</a>
           <!-- CV -->
-          <a target="_blank" class="border border-slate-300 dark:border-slate-700 hover:border-blue-600 px-8 py-3 rounded-lg font-semibold transition-all flex items-center gap-2"
+          <a target="_blank"
+            class="border border-slate-300 dark:border-slate-700 hover:border-blue-600 px-8 py-3 rounded-lg font-semibold transition-all flex items-center gap-2"
             href="#">
             Download CV
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewbox="0 0 24 24">
@@ -254,7 +255,8 @@
               <span
                 class="px-3 py-1 bg-blue-100 dark:bg-blue-900/30 text-blue-600 text-xs font-semibold rounded-full">Tailwind</span>
             </div>
-            <a target="_blank" class="inline-flex items-center text-sm font-bold text-slate-900 dark:text-white hover:text-blue-600"
+            <a target="_blank"
+              class="inline-flex items-center text-sm font-bold text-slate-900 dark:text-white hover:text-blue-600"
               href="https://e-commerce-gamma-wine-32.vercel.app/">Explore Project <svg class="w-4 h-4 ml-1" fill="none"
                 stroke="currentColor" viewbox="0 0 24 24">
                 <path d="M14 5l7 7m0 0l-7 7m7-7H3" stroke-linecap="round" stroke-linejoin="round" stroke-width="2">
@@ -282,7 +284,8 @@
               <span
                 class="px-3 py-1 bg-blue-100 dark:bg-blue-900/30 text-blue-600 text-xs font-semibold rounded-full">Tailwind</span>
             </div>
-            <a target="_blank" class="inline-flex items-center text-sm font-bold text-slate-900 dark:text-white hover:text-blue-600"
+            <a target="_blank"
+              class="inline-flex items-center text-sm font-bold text-slate-900 dark:text-white hover:text-blue-600"
               href="https://company-portfolio-first-progect.vercel.app/">Explore Project <svg class="w-4 h-4 ml-1"
                 fill="none" stroke="currentColor" viewbox="0 0 24 24">
                 <path d="M14 5l7 7m0 0l-7 7m7-7H3" stroke-linecap="round" stroke-linejoin="round" stroke-width="2">
@@ -327,13 +330,14 @@
               </div>
               <div>
                 <h4 class="font-bold">LinkedIn</h4>
-                <a target="_blank" href="https://www.linkedin.com/in/mohamed-ahmed-423364368?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=ios_app"
+                <a target="_blank"
+                  href="https://www.linkedin.com/in/mohamed-ahmed-423364368?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=ios_app"
                   class="text-slate-600 dark:text-slate-400">https://www.linkedin.com/in/mohamed-ahmed-423364368/</a>
               </div>
             </div>
           </div>
         </div>
-        <form
+        <form id="contact-form"
           class="bg-white dark:bg-slate-900 p-8 rounded-2xl shadow-lg border border-slate-200 dark:border-slate-800 space-y-6"
           data-purpose="contact-form">
           <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -438,7 +442,61 @@
       bar.dataset.targetWidth = targetWidth;
       observer.observe(bar);
     });
+
+
+
+    const form = document.getElementById('contact-form');
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      const name = document.getElementById('name').value.trim();
+      const email = document.getElementById('email').value.trim();
+      const message = document.getElementById('message').value.trim();
+
+      if (!name || !email || !message) {
+        alert("من فضلك املأ كل الحقول!");
+        return;
+      }
+
+      // تغيير شكل الزرار عشان يحسس المستخدم إنه بيحمل
+      const btn = form.querySelector('button');
+      const originalText = btn.innerText;
+      btn.innerText = "جاري الإرسال...";
+      btn.disabled = true;
+
+      try {
+        const data = {
+          name: name,
+          email: email,
+          message: message
+        };
+
+        // الإرسال بصيغة JSON
+        const response = await fetch("رابط_السكربت_بتاعك_هنا", {
+          method: "POST",
+          mode: "no-cors", // مهم جداً لتجنب مشاكل الـ CORS في Google Scripts
+          cache: "no-cache",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(data),
+        });
+
+        // ملاحظة: مع "no-cors" الـ response مش هيرجع Success حقيقي
+        // فالحل الأفضل هو الافتراض إنها اتبعتت طالما مفيش Crash
+        alert("📬 تم إرسال الرسالة بنجاح! شكرًا ليك 👍");
+        form.reset();
+
+      } catch (err) {
+        console.error(err);
+        alert("⚠️ فشل في الإرسال، تأكد من اتصال الإنترنت.");
+      } finally {
+        btn.innerText = originalText;
+        btn.disabled = false;
+      }
+    });
   </script>
+
 </body>
 
 </html>
