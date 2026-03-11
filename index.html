@@ -353,41 +353,39 @@
             </div>
           </div>
         </div>
-        <form action="https://formspree.io/f/mgonaqjz" method="POST"
+        <form id="contactForm"
           class="bg-white dark:bg-slate-900 p-8 rounded-2xl shadow-lg border border-slate-200 dark:border-slate-800 space-y-6">
 
           <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
 
             <div class="space-y-2">
               <label class="text-sm font-semibold" for="name">Name</label>
-              <input name="name"
-                class="w-full bg-slate-50 dark:bg-slate-800 border-slate-200 dark:border-slate-700 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none transition-all py-3"
-                id="name" placeholder="John Doe" type="text" required />
+              <input name="name" id="name" type="text" placeholder="John Doe" required
+                class="w-full bg-slate-50 dark:bg-slate-800 border-slate-200 dark:border-slate-700 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none transition-all py-3">
             </div>
 
             <div class="space-y-2">
               <label class="text-sm font-semibold" for="email">Email</label>
-              <input name="email"
-                class="w-full bg-slate-50 dark:bg-slate-800 border-slate-200 dark:border-slate-700 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none transition-all py-3"
-                id="email" placeholder="john@example.com" type="email" required />
+              <input name="email" id="email" type="email" placeholder="john@example.com" required
+                class="w-full bg-slate-50 dark:bg-slate-800 border-slate-200 dark:border-slate-700 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none transition-all py-3">
             </div>
 
           </div>
 
           <div class="space-y-2">
             <label class="text-sm font-semibold" for="message">Message</label>
-            <textarea name="message"
-              class="w-full bg-slate-50 dark:bg-slate-800 border-slate-200 dark:border-slate-700 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none transition-all py-3"
-              id="message" placeholder="How can I help you?" rows="4" required></textarea>
+            <textarea name="message" id="message" rows="4" placeholder="How can I help you?" required
+              class="w-full bg-slate-50 dark:bg-slate-800 border-slate-200 dark:border-slate-700 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none transition-all py-3"></textarea>
           </div>
 
-          <input type="hidden" name="_captcha" value="false">
-
           <button id="sendBtn"
-            class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-4 rounded-lg transition-all shadow-lg shadow-blue-500/25"
-            type="submit">
+            class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-4 rounded-lg transition-all shadow-lg shadow-blue-500/25">
             Send Message
           </button>
+
+          <p id="successMessage" class="text-green-600 font-semibold hidden">
+            Message sent successfully ✓
+          </p>
 
         </form>
       </div>
@@ -467,6 +465,38 @@
       bar.style.width = '0%';
       bar.dataset.targetWidth = targetWidth;
       observer.observe(bar);
+    });
+    const scriptURL = "https://script.google.com/macros/s/AKfycbx1jv42QcD0yBNaCUSRzv9A6AsMIkgrKroj3zp07vZTh1pGKrVF1kNX93QY9P-NlYDWbw/exec";
+    const form = document.getElementById("contactForm");
+    const btn = document.getElementById("sendBtn");
+    form.addEventListener("submit", e => {
+      e.preventDefault();
+      btn.innerText = "Sending...";
+      btn.disabled = true;
+
+      // تحويل البيانات لصيغة Query String عشان الـ Apps Script يقرأها صح
+      const formData = new FormData(form);
+      const queryString = new URLSearchParams(formData).toString();
+
+      fetch(`${scriptURL}?${queryString}`, {
+        method: "POST",
+        mode: "no-cors"
+      })
+        .then(() => {
+          form.reset();
+          btn.innerText = "Message Sent ✓";
+          document.getElementById("successMessage").classList.remove("hidden");
+          setTimeout(() => {
+            btn.innerText = "Send Message";
+            btn.disabled = false;
+          }, 3000);
+        })
+        .catch((error) => {
+          btn.innerText = "Send Message";
+          btn.disabled = false;
+          console.error('Error!', error.message);
+          alert("Error sending message");
+        });
     });
 
   </script>
