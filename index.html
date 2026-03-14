@@ -24,6 +24,15 @@
         }
       }
     }
+    if (
+      localStorage.getItem('color-theme') === 'dark' ||
+      (!('color-theme' in localStorage) &&
+        window.matchMedia('(prefers-color-scheme: dark)').matches)
+    ) {
+      document.documentElement.classList.add('dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+    }
   </script>
   <style data-purpose="custom-animations">
     @keyframes fadeIn {
@@ -51,6 +60,7 @@
       transition: background-color 0.3s ease, color 0.3s ease;
     }
   </style>
+
 </head>
 
 <body class="bg-slate-50 text-slate-900 dark:bg-slate-950 dark:text-slate-100 font-sans antialiased">
@@ -82,11 +92,35 @@
           </svg>
         </button>
       </div>
-      <button class="md:hidden p-2" id="mobile-menu-btn">
-        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewbox="0 0 24 24">
-          <path d="M4 6h16M4 12h16m-7 6h7" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
-        </svg>
-      </button>
+      <div class="flex items-center gap-2 md:hidden">
+
+        <!-- Theme Toggle -->
+        <button id="mobile-theme-toggle"
+          class="p-2 rounded-full bg-slate-100 dark:bg-slate-800 hover:ring-2 ring-primary transition-all">
+
+          <!-- Moon -->
+          <svg id="mobile-dark-icon" class="w-5 h-5 hidden" fill="currentColor" viewBox="0 0 20 20">
+            <path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"></path>
+          </svg>
+
+          <!-- Sun -->
+          <svg id="mobile-light-icon" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24"
+            stroke-width="1.5" stroke="currentColor" class="size-5">
+            <path stroke-linecap="round" stroke-linejoin="round"
+              d="M12 3v2.25m6.364.386-1.591 1.591M21 12h-2.25m-.386 6.364-1.591-1.591M12 18.75V21m-4.773-4.227-1.591 1.591M5.25 12H3m4.227-4.773L5.636 5.636M15.75 12a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0Z" />
+          </svg>
+
+
+        </button>
+
+        <!-- Mobile Menu Toggle -->
+        <button class="p-2" id="mobile-menu-btn">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path d="M4 6h16M4 12h16m-7 6h7" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+          </svg>
+        </button>
+
+      </div>
     </nav>
     <div id="mobile-menu" class="hidden md:hidden px-4 pb-4 transition-all duration-300 ease-in-out">
       <a class="block py-2 mobile-link" href="#home">Home</a>
@@ -94,6 +128,7 @@
       <a class="block py-2 mobile-link" href="#skills">Skills</a>
       <a class="block py-2 mobile-link" href="#projects">Projects</a>
       <a class="block py-2 mobile-link" href="#contact">Contact</a>
+
     </div>
   </header>
   <main class="pt-32 pb-20 px-4" id="home">
@@ -468,7 +503,24 @@
         mobileMenu.classList.add("hidden");
       });
     });
-    // Skill Bar Animation on Scroll
+    const mobileThemeBtn = document.getElementById("mobile-theme-toggle");
+    const mobileDarkIcon = document.getElementById("mobile-dark-icon");
+    const mobileLightIcon = document.getElementById("mobile-light-icon");
+
+    // initialize icons
+    if (document.documentElement.classList.contains("dark")) {
+      mobileLightIcon.classList.remove("hidden");
+    } else {
+      mobileDarkIcon.classList.remove("hidden");
+    }
+
+    // toggle theme
+    mobileThemeBtn.addEventListener("click", () => {
+      themeToggleBtn.click();
+
+      mobileDarkIcon.classList.toggle("hidden");
+      mobileLightIcon.classList.toggle("hidden");
+    });    // Skill Bar Animation on Scroll
     const skillBars = document.querySelectorAll('.skill-bar-fill');
     const observerOptions = { threshold: 0.5 };
 
